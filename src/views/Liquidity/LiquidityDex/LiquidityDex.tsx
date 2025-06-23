@@ -139,7 +139,7 @@ function Wapper() {
   return (
     <>
       <Helmet>
-        <title>TCV | Liquidity</title>
+        <title>Smart Lending Vault</title>
       </Helmet>
 
       {loading ? (

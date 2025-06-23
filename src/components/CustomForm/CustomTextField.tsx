@@ -35,6 +35,17 @@ const CustomTextField = (props: TProps) => {
     ref.current = undefined;
   }, [resetFlag]);
 
+  useEffect(() => {
+    if (rule && rest.value) {
+      const { error } = validate(rest.value as string, rule, name);
+      ref.current = error[0];
+
+      if (_onError) {
+        _onError(error[0]);
+      }
+    }
+  }, [rest.value]);
+
   return (
     <TextField
       variant="outlined"

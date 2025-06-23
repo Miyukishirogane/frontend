@@ -1,9 +1,10 @@
 import { Box, Stack, Typography } from '@mui/material';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CustomTextField from 'src/components/CustomForm/CustomTextField';
 import IconAndName from 'src/components/IconAndName/IconAndName';
 import LoadingButton from 'src/components/LoadingButton/LoadingButton';
 import useExecuteTrade from './hooks/useExecuteTrade';
+import useGetTokenBalance from 'src/hooks/Liquidlity/useGetTokenBalance';
 
 type TInputValue = {
   size: string;
@@ -17,11 +18,27 @@ const ActionBox = () => {
   });
   const { mutate: executeTrade, isPending } = useExecuteTrade();
   const refExecuteTrade = useRef<string | null>(null);
+  const { tokenBalance } = useGetTokenBalance({
+    addressToken: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    decimal: 6,
+  });
+
+  const [isValidate, setIsValidate] = useState(false);
 
   const handleExecuteTrade = (isLong: boolean) => {
     refExecuteTrade.current = isLong ? 'long' : 'short';
     executeTrade({ margin: inputValue.margin, size: inputValue.size, isLong });
   };
+
+  const handleMaxMargin = () => {
+    if (tokenBalance && Number(tokenBalance) > 0) {
+      setInputValue({ ...inputValue, margin: tokenBalance });
+    }
+  };
+
+  useEffect(() => {
+    setInputValue({ ...inputValue, size: (Number(inputValue.margin) * 25).toString() });
+  }, [inputValue.margin]);
 
   return (
     <Stack justifyContent={'space-between'} p={4} color="#828282" height={'100%'}>
@@ -42,8 +59,16 @@ const ActionBox = () => {
                 alignSelf: 'end',
               },
             }}
+            _onError={e => setIsValidate(!!e)}
             InputProps={{
-              endAdornment: <IconAndName nameToken={'USDC'} sxIcon={{ fontSize: '20px' }} />,
+              endAdornment: (
+                <Stack direction={'row'} gap={1.5}>
+                  <Typography sx={{ cursor: 'pointer' }} onClick={handleMaxMargin}>
+                    Max
+                  </Typography>
+                  <IconAndName nameToken={'USDC'} sxIcon={{ fontSize: '20px' }} />
+                </Stack>
+              ),
             }}
           />
         </Box>
@@ -54,9 +79,10 @@ const ActionBox = () => {
             value={inputValue.size}
             inputType="number"
             onChange={e => setInputValue({ ...inputValue, size: e.target.value })}
-            resetFlag={!inputValue.size.length}
+            resetFlag={!inputValue.size.length || isValidate}
             name="Size"
-            rule={{ min: 0 }}
+            rule={{ min: 67, max: Number(tokenBalance) * 25 || undefined }}
+            _onError={e => setIsValidate(!!e)}
             sx={{
               width: '100%',
               '& .MuiInputBase-root': {
@@ -79,7 +105,7 @@ const ActionBox = () => {
             sx: {
               background: 'linear-gradient(90deg, #63e031 0%,rgb(129, 248, 183) 100%)',
             },
-            disabled: isPending,
+            disabled: isPending || isValidate,
           }}
           loading={isPending && refExecuteTrade.current === 'long'}
           onClick={() => handleExecuteTrade(true)}
@@ -93,7 +119,7 @@ const ActionBox = () => {
             sx: {
               background: 'linear-gradient(90deg, #ff5858 0%,rgb(245, 80, 80) 100%)',
             },
-            disabled: isPending,
+            disabled: isPending || isValidate,
           }}
           loading={isPending && refExecuteTrade.current === 'short'}
           onClick={() => handleExecuteTrade(false)}
