@@ -29,6 +29,7 @@ const useGetMaxBorrow = (tokenDecimal: number) => {
       }
     },
     enabled: !!address,
+    refetchInterval: 5 * 1000,
   });
 
   return query;

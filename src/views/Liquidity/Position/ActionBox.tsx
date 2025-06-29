@@ -20,6 +20,7 @@ const ActionBox = () => {
   const { mutate: executeTrade, isPending } = useExecuteTrade();
   const refExecuteTrade = useRef<string | null>(null);
   const { data: userTradingAddress } = useUserTradingAddress();
+  console.log('🚀 ~ ActionBox ~ userTradingAddress:', userTradingAddress);
   const { tokenBalance } = useGetTokenBalance({
     addressToken: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     decimal: 6,
