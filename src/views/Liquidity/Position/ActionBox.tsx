@@ -5,6 +5,7 @@ import IconAndName from 'src/components/IconAndName/IconAndName';
 import LoadingButton from 'src/components/LoadingButton/LoadingButton';
 import useExecuteTrade from './hooks/useExecuteTrade';
 import useGetTokenBalance from 'src/hooks/Liquidlity/useGetTokenBalance';
+import useUserTradingAddress from '../LiquidityLending/hooks/useUserTradingAddress';
 
 type TInputValue = {
   size: string;
@@ -18,9 +19,11 @@ const ActionBox = () => {
   });
   const { mutate: executeTrade, isPending } = useExecuteTrade();
   const refExecuteTrade = useRef<string | null>(null);
+  const { data: userTradingAddress } = useUserTradingAddress();
   const { tokenBalance } = useGetTokenBalance({
     addressToken: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     decimal: 6,
+    customAddress: userTradingAddress,
   });
 
   const [isValidate, setIsValidate] = useState(false);
@@ -97,7 +100,7 @@ const ActionBox = () => {
         </Box>
       </Stack>
 
-      <Stack direction={'column'} gap={1}>
+      <Stack direction={'column'} gap={1} mt={2}>
         <LoadingButton
           props={{
             variant: 'gradient',

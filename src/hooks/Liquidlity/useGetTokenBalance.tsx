@@ -10,9 +10,10 @@ interface IProps {
   decimal: number;
   isNative?: boolean;
   otherKey?: string[];
+  customAddress?: Address;
 }
 
-const useGetTokenBalance = ({ addressToken, decimal, isNative = false, otherKey = [] }: IProps) => {
+const useGetTokenBalance = ({ addressToken, decimal, isNative = false, otherKey = [], customAddress }: IProps) => {
   const { address } = useAccount();
 
   const vaultInfoQuery = useQuery({
@@ -21,7 +22,7 @@ const useGetTokenBalance = ({ addressToken, decimal, isNative = false, otherKey 
       if (address) {
         try {
           const balanceUser = await getBalance(configEvmChain, {
-            address: address,
+            address: customAddress || address,
             token: isNative ? undefined : addressToken,
           });
 
