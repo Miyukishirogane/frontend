@@ -13,14 +13,20 @@ const useGetMaxBorrow = (tokenDecimal: number) => {
     queryKey: ['useGetMaxBorrow', address],
     queryFn: async () => {
       if (!address) return '0';
-      const result = await readContract(configEvmChain, {
-        abi: lendingPositionAbi,
-        address: positionContractAddress,
-        functionName: 'maxBorrow',
-        args: [address],
-      });
 
-      return BN(result).div(BN(10).pow(tokenDecimal)).toString();
+      try {
+        const result = await readContract(configEvmChain, {
+          abi: lendingPositionAbi,
+          address: positionContractAddress,
+          functionName: 'maxBorrow',
+          args: [address],
+        });
+
+        return BN(result).div(BN(10).pow(tokenDecimal)).toString();
+      } catch (error) {
+        console.log('🚀 ~ queryFn: ~ error:', error);
+        return BN(0);
+      }
     },
     enabled: !!address,
   });

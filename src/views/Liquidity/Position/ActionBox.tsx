@@ -25,11 +25,11 @@ const ActionBox = () => {
     decimal: 6,
     customAddress: userTradingAddress,
   });
-
   const [isValidate, setIsValidate] = useState(false);
 
   const handleExecuteTrade = (isLong: boolean) => {
     refExecuteTrade.current = isLong ? 'long' : 'short';
+    console.log('🚀 ~ handleExecuteTrade: ~ inputValue:', refExecuteTrade.current);
     executeTrade({ margin: inputValue.margin, size: inputValue.size, isLong });
   };
 

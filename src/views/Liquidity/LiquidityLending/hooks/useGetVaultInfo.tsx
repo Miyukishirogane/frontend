@@ -20,26 +20,35 @@ const useGetVaultInfo = ({ vaultAddress }: IProps) => {
     queryFn: async () => {
       let apy: TLendingApyInfo | undefined;
       if (address) {
-        const [depositedResp] = await readContracts(configEvmChain, {
-          contracts: [
-            {
-              abi: lendingPositionAbi,
-              address: positionContractAddress,
-              functionName: 'getBalance',
-              args: ['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'],
-            },
-          ],
-        });
+        try {
+          const [depositedResp] = await readContracts(configEvmChain, {
+            contracts: [
+              {
+                abi: lendingPositionAbi,
+                address: positionContractAddress,
+                functionName: 'getBalance',
+                args: ['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'],
+              },
+            ],
+          });
 
-        const deposited = depositedResp.result || 0;
-        const depositorBalance = 0;
-        const decimal = vaultListInfo[vaultAddress].decimal;
+          const deposited = depositedResp.result || 0;
+          const depositorBalance = 0;
+          const decimal = vaultListInfo[vaultAddress].decimal;
 
-        return {
-          deposited: BN(deposited).div(BN(10).pow(decimal)).toString(),
-          depositorBalance: BN(depositorBalance).div(BN(10).pow(decimal)).toString(),
-          apy: apy?.supplyAPY || 0,
-        };
+          return {
+            deposited: BN(deposited).div(BN(10).pow(decimal)).toString(),
+            depositorBalance: BN(depositorBalance).div(BN(10).pow(decimal)).toString(),
+            apy: apy?.supplyAPY || 0,
+          };
+        } catch (error) {
+          console.log('🚀 ~ queryFn: ~ error:', error);
+          return {
+            deposited: '0',
+            depositorBalance: '0',
+            apy: apy?.supplyAPY || 0,
+          };
+        }
       }
 
       return {

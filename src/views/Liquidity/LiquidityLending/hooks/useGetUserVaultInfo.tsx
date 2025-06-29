@@ -20,23 +20,30 @@ const useGetUserVaultInfo = ({ vaultAddress }: IProps) => {
     queryKey: ['useGetUserVaultInfo', vaultAddress, address],
     queryFn: async () => {
       if (address) {
-        const [userDepositedBalance] = await readContracts(configEvmChain, {
-          contracts: [
-            {
-              abi: lendingPositionAbi,
-              address: positionContractAddress,
-              functionName: 'balanceTokenOf',
-              args: [address, '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'],
-            },
-          ],
-        });
-        const decimal = vaultListInfo[vaultAddress].decimal;
+        try {
+          const [userDepositedBalance] = await readContracts(configEvmChain, {
+            contracts: [
+              {
+                abi: lendingPositionAbi,
+                address: positionContractAddress,
+                functionName: 'balanceTokenOf',
+                args: [address, '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'],
+              },
+            ],
+          });
+          const decimal = vaultListInfo[vaultAddress].decimal;
 
-        return {
-          userDepositedBalance: BN(userDepositedBalance.result || 0)
-            .div(BN(10).pow(decimal))
-            .toString(),
-        };
+          return {
+            userDepositedBalance: BN(userDepositedBalance.result || 0)
+              .div(BN(10).pow(decimal))
+              .toString(),
+          };
+        } catch (error) {
+          console.log('🚀 ~ queryFn: ~ error:', error);
+          return {
+            userDepositedBalance: 0,
+          };
+        }
       }
 
       return {

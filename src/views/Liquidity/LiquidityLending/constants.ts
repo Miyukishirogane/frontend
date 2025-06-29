@@ -19,6 +19,12 @@ export const vaultListInfo: TVaultListInfo = {
     addressContract: '0x390f72dB15dd3F28b37E4f1B0556A61f8aa9B37F',
     addressToken: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
   },
+  '0xAb6dC637728f89C4b6949F3e68AB22A74dC0F9BE': {
+    token: 'USDC',
+    decimal: 6,
+    addressContract: '0xAb6dC637728f89C4b6949F3e68AB22A74dC0F9BE',
+    addressToken: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+  },
 } as const;
 
-export const positionContractAddress = '0x390f72dB15dd3F28b37E4f1B0556A61f8aa9B37F';
+export const positionContractAddress = '0xAb6dC637728f89C4b6949F3e68AB22A74dC0F9BE';

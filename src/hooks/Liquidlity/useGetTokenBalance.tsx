@@ -17,7 +17,7 @@ const useGetTokenBalance = ({ addressToken, decimal, isNative = false, otherKey 
   const { address } = useAccount();
 
   const vaultInfoQuery = useQuery({
-    queryKey: ['useGetBalance', addressToken, address, ...otherKey],
+    queryKey: ['useGetBalance', addressToken, address, customAddress, ...otherKey],
     queryFn: async () => {
       if (address) {
         try {
