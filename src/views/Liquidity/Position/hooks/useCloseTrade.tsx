@@ -7,12 +7,14 @@ import { configEvmChain } from 'src/jotai/wallet/config';
 import { proxyAddressAbi } from 'src/jotai/wallet/abi/ProxyAddressAbi';
 import { toastTxSuccess } from 'src/utils/toast';
 import useUserTradingAddress from '../../LiquidityLending/hooks/useUserTradingAddress';
+import usePortfolioPosition from './usePortfolioPosition';
 
 export const proxyAddress = '0xAb6dC637728f89C4b6949F3e68AB22A74dC0F9BE';
 
 const useCloseTrade = () => {
   const { address } = useAccount();
   const { data: userTradingAddress } = useUserTradingAddress();
+  const { refetch: refetchPortfolioPosition } = usePortfolioPosition();
 
   const mutate = useMutation({
     mutationKey: ['useCloseTrade', address],
@@ -30,7 +32,9 @@ const useCloseTrade = () => {
           args: [data, dataWithdraw],
           gasPrice: BigInt(1e7),
         });
+
         toastTxSuccess(tx);
+        refetchPortfolioPosition();
 
         return tx;
       } catch (error) {

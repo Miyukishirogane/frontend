@@ -54,7 +54,7 @@ const useExecuteTrade = () => {
           await waitForTransactionReceipt(configEvmChain, { hash: approve });
         }
 
-        const data = await encodeExecuteTrade(margin, address, size, isLong ? -1 : 1);
+        const data = await encodeExecuteTrade(margin, address, size, isLong ? 2 : 1);
 
         const tx = await writeContract(configEvmChain, {
           address: proxyAddress,
