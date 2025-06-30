@@ -33,6 +33,12 @@ const listTitleHeader: TTableHeaderCustom[] = [
   { title: '', sx: { textAlign: 'center' } },
 ];
 
+const mapPositionStatus: Record<number, string> = {
+  2: 'Long',
+  1: 'Short',
+  0: 'Flat',
+};
+
 const PositionTable = () => {
   const pagedData = mockPositions;
   const { data: position, isFetching } = usePortfolioPosition();
@@ -42,7 +48,7 @@ const PositionTable = () => {
     {
       id: 'id',
       tableCellProps: { sx: { textAlign: 'center', verticalAlign: 'middle' } },
-      renderItem: row => <Typography variant="body2">{row.id}</Typography>,
+      renderItem: () => <Typography variant="body2">{mapPositionStatus[Number(position?.side) || 0]}</Typography>,
     },
     {
       id: 'entryPrice',
